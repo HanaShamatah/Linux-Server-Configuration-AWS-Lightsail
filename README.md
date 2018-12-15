@@ -1,6 +1,7 @@
 # Linux Server Configuration AWS Lightsail
-installation of a Linux server and prepare it to host your web applications
-secure your server from a number of attack vectors, install and configure a database server, and deploy Item Catalog applications onto it.
+In this project, Ubuntu Linux server installed and prepared to host a Restful web application (Item Catalog application), 
+the fourth project in Full Stack Web Developer Nanodegree.
+
 
 ## Get Started
 
