@@ -1,15 +1,16 @@
 # Linux Server Configuration AWS Lightsail
 installation of a Linux server and prepare it to host your web applications
-secure your server from a number of attack vectors, install and configure a database server, and deploy one of your existing web applications onto it.
+secure your server from a number of attack vectors, install and configure a database server, and deploy Item Catalog applications onto it.
 
 ## Get Started
 
 ### Amazon Lightsail Instance
-- Create a new ubuntu Linux server  instance on [Amazon Lightsail]()
+- Create a new ubuntu Linux server  instance on [Amazon Lightsail](https://lightsail.aws.amazon.com).
 - Create an ssh key named udacitykey and download it.
-- Follow the instructions to SSH into the created server
+- Follow the instructions to SSH into the created server.
 ```
 Public IP: 52.59.248.6
+URL: http://52.59.248.6.xip.io/
 SSH Port: 22
 SSH Key: udacitykey.pem
 ```
@@ -19,14 +20,14 @@ when ssh port changes as required in the next steps instead of browser-based ssh
 $ ssh ubuntu@52.59.248.6 -p 22 -i udacitykey.pem
 ```
 
-### Secure the server
-- Update all currently installed packages and then upgrade them to install the latest versions
+### Secure the Server
+- Update all currently installed packages and then upgrade them to install the latest versions.
 ```
 $ sudo apt-get update
 $ sudo apt-get upgrade
 ```
 - Change the SSH port from 22 to 2200 by editing sshd_config file using sudo nano command 
-and chane the port number to 2200 inside it.
+and change the port number to 2200 inside it.
 ```
 $ sudo nano /etc/ssh/sshd_config
 ```
@@ -38,17 +39,17 @@ $ sudo nano /etc/ssh/sshd_config
    Denay all incoming and allow all outgoing connection requests:
    ```
    $ sudo ufw default deny incoming
-   $ sudo ufw default allow outgoing
+   $ sudo ufw allow outgoing
    ```
-   All incoming connections only for SSH (port: 2200). HTTP (port: 80), and NTP (port: 123) 
-   and deny port 22 since it will not be used.
+   Allow incoming connections only for SSH (port: 2200). HTTP (port: 80), and NTP (port: 123) 
+   and deny port 22 since it will not be used again.
    ```
    $ sudo ufw allow 2200/tcp
    $ sudo ufw allow www
    $ sudo ufw allow ntp
    $ sudo ufw deny 22
    ```
-   Then, turn the firewall on, and check the status to ensure that it is enabled
+   Then, turn the firewall on, and check the status to ensure that it is enabled.
    ```
    $ sudo ufw enable
    $ sudo ufw status
@@ -56,14 +57,14 @@ $ sudo nano /etc/ssh/sshd_config
 
 - Enforce Key-based SSH authentication to get access to the server by editing sshd_config file by opening it 
 using nano command and change PasswordAuthentication to no inside it. Restart the ssh to enable the 
-edited configurations
+edited configurations.
 ```
 $ sudo nano /etc/ssh/sshd_config
 $ sudo service ssh restart
 ```
 
 ### Give grader access
-- Create a new user named grader with NUIX password: udacityuser
+- Create a new user named grader with NUIX password: udacityuser.
 ```
 $ sudo adduser grader
 ```
@@ -73,7 +74,7 @@ $ sudo adduser grader
    ```
    $ sudo ls /etc/sudoers.d
    ```
-   To add grader to the permiited sudo users, create an empty grader file in a new file in  sudoers.d directory 
+   To add grader to the permitted sudo users, create an empty grader file in sudoers.d directory 
    using sudo nano command, then, add the following piece of code to it.
    ```
    grader ALL=(ALL:ALL) ALL 
@@ -83,23 +84,23 @@ $ sudo adduser grader
    ```
    Now, the grader will be in sudo users list :)
 
-- Grader Login 
+- Grader Login  
    The connection request to access the server as grader user from a new terminal will be denied 
-   due to authontication purpose that restrict user to user ssh key to connect th thye server.
+   due to authontication purpose that restrict user to use ssh key to connect the server.
    ```
    $ ssh grader@52.59.248.6 -p 2200
    grader@52.59.248.6: Permission denied (publickey).
    ```
    Switch to grader user from ubuntu main user using its password
    ```
-   $ su - grader
+   $ sudo su - grader
    ```
    Or change SSH authentication to enables password authentication on to login and then return it to the 
    required configuration.
 
 - Create an SSH key  
    For security purpose ssk key must be used to log into the server instance from the command line. 
-   for this an ssh key for the grader user is generated locally using ssh-keygen tool.
+   for this an ssh key for the grader user is generated locally using ssh-keygen tool.  
    Open a new local terminal and run ssh-keygen command, save the key in /.ssh/graderkey file in 
    my home directory with passphrase: udacityuser.
    Read the key content using cat command for graderkey.pub file, and copy it.
@@ -119,7 +120,7 @@ $ sudo adduser grader
    ```
    $ ssh grader@52.59.248.6 -p 2200 -i ~/.ssh/graderkey
    ```
-   Set the permission to read write and execute of .ssh file only to the grader user, and the permission of authorized_keys 
+   Set the permission to read, write, and execute of .ssh file only to the grader user, and the permission of authorized_keys 
    file to read and write to the grader user and only read for others.
    ```
    sudo chmod 700 /.ssh
@@ -140,7 +141,7 @@ $ timedatectl status
 ```
 $ sudo apt-get install postgresql postgresql-contrib
 ```
-   Check the connections to only local host 127.0.0.0 that do not allow any remote connections 
+   Check the connections to only local host 127.0.0.0 to do not allow any remote connections 
    by reading pg_hba.conf configuration file:
    ```
    $ sudo nano /etc/postgresql/9.5/main/pg_hba.conf
@@ -167,7 +168,7 @@ $ sudo apt-get install postgresql postgresql-contrib
    ```
 
 - Install git and configure it with my details by creating a configuration file named .gitconfig 
-and insert the details into it. Then list the configured details to insyre that it is inserted correctly.
+and insert the details into it. Then list the configured details to insure that it is inserted correctly.
 ```
 $ sudo apt-get install git
 $ nano ~/.gitconfig
@@ -230,7 +231,7 @@ to Authorized Javascript origins and update Authorized redirect URIs with:
 http://52.59.248.6.xip.io/gconnect
 http://52.59.248.6.xip.io/login
 ```
-Note that a DNS name xio.io is used from xio.io service.
+Note that a DNS name xio.io is used from [xio.io](http://xip.io/) service.
 Download client secret.json file to update the cooresponding file in catalog cloned project using nano to edit it.
 ```
 $ sudo nano client_secrets.json 
@@ -250,7 +251,7 @@ $ sudo nano filldatabase_clothes.py
 ```
 
 - Create catalog.wsgi configuration file in main application diretory (/var/www/catalog) and 
-add some piece of code then save it:
+add the following piece of code then save it:
 ```
 $ sudo nano /var/www/catalog/catalog.wsgi
 ```
@@ -298,12 +299,23 @@ $ sudo service apache2 restart
 ```
 
 ### Run the Application
-- Run database setup file, database fill data file, the run init.py application.
+Run database setup file, database fill data file, the run init.py application.
 ```
-$ python database_create.py
-$ python filldatabase_clothes.py
-$ python __init__.py
+$ python database_create.py  # to build database tables
+$ python filldatabase_clothes.py  # to fill data into database tables
+$ python __init__.py  # to run th application
 ```
+
+## Exrernal Resources
+- [DigitalOcean tutorial](https://www.digitalocean.com/community/tutorials/)  
+   Deploy a Flask Application on an Ubuntu VPS (https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flask-application-on-an-ubuntu-vps)
+   [Install the Apache Web Server on Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-16-04)
+   [PostgreSQL on Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-16-04)
+   [Install Git on Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-install-git-on-ubuntu-16-04)
+
+- [Ubuntu Documentation](https://help.ubuntu.com/)
+- [Amazon Lightsail Documentation](https://docs.aws.amazon.com/lightsail/index.html#lang/en_us)
+
 
 ## License
 The content of this repository is licensed under an [MIT](https://choosealicense.com/licenses/mit/).
