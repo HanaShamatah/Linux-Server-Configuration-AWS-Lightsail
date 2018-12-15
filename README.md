@@ -1,4 +1,6 @@
 # Linux Server Configuration AWS Lightsail
+installation of a Linux server and prepare it to host your web applications
+secure your server from a number of attack vectors, install and configure a database server, and deploy one of your existing web applications onto it.
 
 ## Get Started
 
@@ -245,6 +247,62 @@ $ sudo nano __init__.py
 ```
 $ sudo nano catalog_database.py
 $ sudo nano filldatabase_clothes.py
+```
+
+- Create catalog.wsgi configuration file in main application diretory (/var/www/catalog) and 
+add some piece of code then save it:
+```
+$ sudo nano /var/www/catalog/catalog.wsgi
+```
+```
+#!/usr/bin/python
+import sys
+import logging
+logging.basicConfig(stream=sys.stderr)
+sys.path.insert(0,"/var/www/catalog/")
+
+
+from catalog import app as application
+application.secret_key = 'super_secret_key'
+```
+
+- Configure and Enable a New Virtual Host by creating catalog.conf file using nano then paste the 
+following code and save it:
+```
+$ sudo nano /etc/apache2/sites-available/catalog.conf 
+```
+```
+<VirtualHost *:80>
+                ServerName 52.59.248.6
+                ServerAdmin hanashamata@gmail.com.com
+                WSGIScriptAlias / /var/www/catalog/catalog.wsgi
+                <Directory /var/www/FlaskApp/FlaskApp/>
+                        Order allow,deny
+                        Allow from all
+                </Directory>
+                Alias /static /var/www/catalog/catalog/static
+                <Directory /var/www/catalog/catalog/static/>
+                        Order allow,deny
+                        Allow from all
+                </Directory>
+                ErrorLog ${APACHE_LOG_DIR}/error.log
+                LogLevel warn
+                CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+```
+Disable the default virtual host and Enable the catalog.conf virtual host, then restart apache.
+```
+$ sudo a2dissite 000-default.conf
+$ sudo a2ensite catalog.conf
+$ sudo service apache2 restart
+```
+
+### Run the Application
+- Run database setup file, database fill data file, the run init.py application.
+```
+$ python database_create.py
+$ python filldatabase_clothes.py
+$ python __init__.py
 ```
 
 ## License
